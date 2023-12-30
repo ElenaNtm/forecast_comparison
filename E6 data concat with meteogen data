@@ -1,0 +1,55 @@
+#Libraries
+import pandas as pd
+import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import ttest_ind
+import numpy as np
+from datetime import datetime
+from matplotlib.dates import WeekdayLocator, DateFormatter
+import matplotlib.dates as mdates
+
+#Load the data from the downloads, the path must be changed every time you run this code
+#And the dataframe with the already existing data
+
+path = "C:/Users/Eleni/Downloads/DataExport-12-22-2023.xlsx"
+df = pd.read_excel(path)
+
+df['DateTime'] = pd.to_datetime(df['DateTime'], format='%d/%m/%Y %H:%M')
+
+#Manipulate the data so that we have MWh instead of KWh
+#rename columns
+df = df.rename(columns={'DateTime':'Valid Date UTC+2','Energy forecast - GEARS_BZ01_NDR_SA_N (KWh)':'Energy E6 (MWh)', "MQ - GEARS_BZ01_NDR_SA_N (ΜWh)":'MQ (MWh)','IPTO W+1 - GEARS_BZ01_NDR_SA_N (KWh)':'W+1 (MWh)','MS - GEARS_BZ01_NDR_SA_N (ΜWh)':"MS (ΜWh)"})
+df['Energy E6 (MWh)'] = df['Energy E6 (MWh)']/1000
+df['W+1 (MWh)'] = df['W+1 (MWh)']/1000
+df["MS (ΜWh)"] = df["MS (ΜWh)"]/1000
+df.set_index('Valid Date UTC+2', inplace=True)
+
+#Load the old data to concatenate them with the new data
+path = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/GEARS TASKS/Tasks/METEOGEN Analysis/met_e6_data.xlsx"
+data = pd.read_excel(path)
+data = data.set_index('Valid Date UTC+2')
+
+result = pd.concat([df, data])
+
+#Load the meteogen data
+path = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/GEARS TASKS/Tasks/METEOGEN Analysis/historical_forecast_data_split.xlsx"
+met = pd.read_excel(path, sheet_name='EnergySheet')
+met['Valid Date UTC+2'] = pd.to_datetime(met['Valid Date UTC+2'])
+met = met.set_index('Valid Date UTC+2')
+
+#Sum the energy produced by 15 minutes
+met['MET Energy (MWh)'] = met.sum(axis=1)
+#met.head()
+new = pd.DataFrame()
+new['MET Energy (MWh)'] = met['MET Energy (MWh)']
+
+#Concat to one dataframe the sum
+result = pd.concat([result, new])
+
+#Some random columns was created so we drop it, check before performing this actions
+result = result.drop(0, axis = 1)
+
+#Save the file
+path = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/GEARS TASKS/Tasks/METEOGEN Analysis/met_e6_data.xlsx"
+result.to_excel(path, index = True)
