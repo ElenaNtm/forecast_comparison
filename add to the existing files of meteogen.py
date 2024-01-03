@@ -62,6 +62,7 @@ df = df.drop(['Type', 'Radiation'], axis = 1)
 
 #Bring the data to a suitable format|Creating separate DataFrames for each group and saving them to a local drive
 grouped = df.groupby('Asset')
+#We have a separate directory for the new data, only after checking it we will concat them with the old files
 output_directory = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/Επιφάνεια εργασίας/met"
 
 # Iterate over the groups
@@ -77,8 +78,8 @@ for asset, group_df in grouped:
 
 #Concat the dataframesby name and save them to the initial directory where the old files are
 # Specify the directories
-dir_path1 = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/Επιφάνεια εργασίας/meteogen"
-dir_path2 = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/Επιφάνεια εργασίας/meteogen/met"
+dir_path1 = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/Επιφάνεια εργασίας/meteogen"#old data directory
+dir_path2 = "C:/Users/Eleni/OneDrive - Hellenic Association for Energy Economics (1)/Επιφάνεια εργασίας/meteogen/met"#new data directory
 
 # Function to merge CSV files with the same name from two directories
 def merge_and_save_csv_files(dir_path1, dir_path2):
