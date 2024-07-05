@@ -78,3 +78,4 @@ NCBALR_C2 = 0 <-> ANDEV < 𝑻𝑶𝑳𝒓,𝑫𝑬𝑽_NORM (%)<br>
 
 Αντίστοιχη διαδικασία ανά πάρκο αυτή την φορά<br>
 
+newkpis_modified file is an addition to the existing framework, adding a set of KPIs and finaly finding the weights distribution for the next submission between the two forecasters <br>
